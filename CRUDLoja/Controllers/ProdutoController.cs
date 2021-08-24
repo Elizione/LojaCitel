@@ -1,5 +1,6 @@
 ﻿using CRUDLoja.Data;
 using CRUDLoja.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MySqlConnector;
@@ -10,8 +11,10 @@ using System.Threading.Tasks;
 
 namespace CRUDLoja.Controllers
 {
+
     public class ProdutoController : Controller
     {
+        
         public IRepository Repository { get; }
 
         public ProdutoController(IRepository repository)
@@ -96,21 +99,20 @@ namespace CRUDLoja.Controllers
                 }
 
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateProduto(int id, Produto produto, int categoriaId)
         {
-
+            
             try
             {
-                Produto produtoTemp = await Repository.GetProdutoAsync(id);
 
-                produtoTemp.CategoriaProdutos = new List<CategoriaProduto>
+                produto.CategoriaProdutos = new List<CategoriaProduto>
                             {
                                 new CategoriaProduto()
                                     {
@@ -119,9 +121,10 @@ namespace CRUDLoja.Controllers
                                     }
                             };
 
-                if (produtoTemp != null)
+                if (produto != null)
                 {
-                    Repository.Update(produtoTemp);
+                    Repository.Update(produto);
+                    
                     if (await Repository.SaveChangesAsync())
                     {
                         return RedirectToAction(nameof(ProdutoIndex));
@@ -136,10 +139,9 @@ namespace CRUDLoja.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-
-                throw;
+                throw ex;
             }
         }
 
@@ -158,9 +160,9 @@ namespace CRUDLoja.Controllers
                 }
 
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -187,23 +189,11 @@ namespace CRUDLoja.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-
-                throw;
+                throw ex;
             }
         }
 
-        public async Task Carrega()
-        {
-            var ItensTipoCategoria = new List<SelectListItem>();
-            var tipoCategoria = await Repository.GetAllCategoriasAsync(false);
-
-            tipoCategoria.ToList().ForEach(t =>
-                ItensTipoCategoria.Add(new SelectListItem { Value = t.Id.ToString(), Text = t.Nome })
-            );
-
-            ViewBag.Categorias = ItensTipoCategoria;
-        }
     }
 }

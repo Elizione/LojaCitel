@@ -34,7 +34,8 @@ namespace CRUDLoja.Data
 
         public void Update<T>(T entity) where T : class
         {
-            Context.UpdateRange(entity);
+            //Context.UpdateRange(entity);
+            Context.Entry(entity).State = EntityState.Modified;
         }
 
         public async Task<bool> SaveChangesAsync()

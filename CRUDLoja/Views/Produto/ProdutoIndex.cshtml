@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<CRUDLoja.Models.Produto>
 
 @{
-    ViewData["Title"] = "ProdutoIndex";
+    ViewData["Title"] = "Produtos";
 }
 
-<h1>ProdutoIndex</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
     <a asp-action="CreateProduto">Novo Produto</a>
@@ -45,8 +45,8 @@
                 @Html.DisplayFor(modelItem => item.CategoriaProdutos.AsQueryable().FirstOrDefault().Categoria.Nome)
             </td>
             <td>
-                <a asp-action="UpdateProduto" asp-route-id="@item.Id">Atualizar</a>
-                <a asp-action="DeleteProduto" asp-route-id="@item.Id">Excluir</a>
+                <a asp-action="UpdateProduto" asp-route-id="@item.Id" class="btn btn-warning">Atualizar</a>
+                <a asp-action="DeleteProduto" asp-route-id="@item.Id" class="btn btn-danger">Excluir</a>
             </td>
         </tr>
 }
